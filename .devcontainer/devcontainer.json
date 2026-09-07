@@ -1,0 +1,16 @@
+{
+    "name": "TaskTracker Dev",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/workspace",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+              "ms-dotnettools.csdevkit",
+              "anthropic.claude-code",
+              "redhat.vscode-yaml",
+            ]
+        }
+    },
+    "forwardPorts": [5227, 5165]
+}

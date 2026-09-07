@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/TaskTracker.Api/TaskTracker.Api.csproj" />
+    <Project Path="src/TaskTracker.Contracts/TaskTracker.Contracts.csproj" />
+    <Project Path="src/TaskTracker.Domain/TaskTracker.Domain.csproj" />
+    <Project Path="src/TaskTracker.Infrastructure/TaskTracker.Infrastructure.csproj" />
+    <Project Path="src/TaskTracker.Web/TaskTracker.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/TaskTracker.IntegrationTests/TaskTracker.IntegrationTests.csproj" />
+    <Project Path="tests/TaskTracker.UnitTests/TaskTracker.UnitTests.csproj" />
+  </Folder>
+</Solution>
