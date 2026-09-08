@@ -16,6 +16,7 @@ services:
     volumes:
       - ../:/workspace
       - claude-config:/root/.claude
+      - dotnet-usersecrets:/root/.microsoft
     depends_on:
       - db
     environment:
@@ -23,3 +24,4 @@ services:
 volumes:
   pgdata:
   claude-config:
+  dotnet-usersecrets:
