@@ -15,9 +15,11 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ../:/workspace
+      - claude-config:/root/.claude
     depends_on:
       - db
     environment:
        ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
 volumes:
-  pgdata: 
+  pgdata:
+  claude-config:
