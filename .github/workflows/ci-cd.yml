@@ -60,6 +60,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/tasktracker-api:latest
+          tags: ghcr.io/refactorninja12/tasktracker-api:latest
 
 
