@@ -11,6 +11,10 @@ public class TaskTrackerApiFactory : WebApplicationFactory<Program>
     {
         builder.UseSetting("ConnectionStrings:DefaultConnection",
             "Host=db;Port=5432;Database=tasktracker_test;Username=tasktracker;Password=devpassword");
+        builder.UseSetting("Jwt:Key", "en-test-nyckel-minst-32-tecken-lång-för-ci-och-lokalt");
+        builder.UseSetting("Jwt:Issuer", "TaskTrackerApi");
+        builder.UseSetting("Jwt:Audience", "TaskTrackerClient");
+
     }
 
     public void ResetDatabase()
