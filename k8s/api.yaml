@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tasktracker-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tasktracker-api
+  template:
+    metadata:
+      labels:
+        app: tasktracker-api
+    spec:
+      containers:
+        - name: tasktracker-api
+          image: ghcr.io/refactorninja12/tasktracker-api:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Production"
+          envFrom:
+            - secretRef:
+                name: api-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tasktracker-api
+spec:
+  selector:
+    app: tasktracker-api
+  ports:
+    - port: 8080
+      targetPort: 8080

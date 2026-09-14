@@ -1,6 +1,7 @@
 using System.ComponentModel.Design;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TaskTracker.Infrastructure;
 namespace TaskTracker.IntegrationTests;
@@ -22,7 +23,7 @@ public class TaskTrackerApiFactory : WebApplicationFactory<Program>
         using var scope = Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         db.Database.EnsureDeleted();
-        db.Database.EnsureCreated();
+        db.Database.Migrate();
     }
     
 }
