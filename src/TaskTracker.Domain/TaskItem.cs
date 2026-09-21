@@ -10,7 +10,8 @@ public class TaskItem
     public DateTimeOffset CreatedAt {get; set;}
     public DateOnly? Deadline {get; set;}
     public DateTimeOffset? Completed {get; set;}
-    public string UserId {get; set;} = string.Empty;
+    public int BoardId{get; set;}
     public TaskItemStatus Status {get; set;} = TaskItemStatus.ToDo;
+    public Board? Board { get; set; }
 
 }

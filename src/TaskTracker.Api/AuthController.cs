@@ -78,7 +78,7 @@ public class AuthController : ControllerBase
     }
     [Authorize]
     [HttpDelete]
-    public async Task<IActionResult> DeleteUser(RegisterRequest request)
+    public async Task<IActionResult> DeleteUser(DeleteAccountDto request)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var user = await _usermanager.FindByIdAsync(userId!);

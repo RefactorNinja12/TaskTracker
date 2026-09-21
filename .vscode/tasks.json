@@ -1,0 +1,35 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start API",
+            "type": "shell",
+            "command": "dotnet run --project src/TaskTracker.Api",
+            "isBackground": true,
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "group": "tasktracker"
+            }
+        },
+        {
+            "label": "Start Web",
+            "type": "shell",
+            "command": "dotnet watch --project src/TaskTracker.Web run",
+            "isBackground": true,
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "group": "tasktracker"
+            }
+        },
+        {
+            "label": "Start API + Web",
+            "dependsOn": ["Start API", "Start Web"],
+            "dependsOrder": "parallel",
+            "problemMatcher": []
+        }
+    ]
+}

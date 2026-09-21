@@ -9,15 +9,11 @@ using TaskTracker.Infrastructure;
 
 namespace TaskTracker.IntegrationTests;
 
-public class AuthEndpointsTests : IClassFixture<TaskTrackerApiFactory >
+public class AuthEndpointsTests : TaskTrackerTestBase
 {
-    private readonly HttpClient _client;
-    
-
-    public AuthEndpointsTests(TaskTrackerApiFactory factory)
+    public AuthEndpointsTests(TaskTrackerApiFactory factory) : base(factory)
     {
-        factory.ResetDatabase();
-        _client = factory.CreateClient();
+        
     }
 
     [Fact]
@@ -66,7 +62,7 @@ public class AuthEndpointsTests : IClassFixture<TaskTrackerApiFactory >
 
       var deleteRequest = new HttpRequestMessage(HttpMethod.Delete, "/api/Auth")
       {
-         Content = JsonContent.Create(new { email = "login@example.com", password = "Test1234!" })
+         Content = JsonContent.Create(new {password = "Test1234!" })
       };
       deleteRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 

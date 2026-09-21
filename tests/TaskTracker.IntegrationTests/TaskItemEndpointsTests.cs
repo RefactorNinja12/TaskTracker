@@ -11,16 +11,13 @@ using TaskTracker.Infrastructure;
 
 namespace TaskTracker.IntegrationTests;
 
-public class TaskItemEndpointsTests : IClassFixture<TaskTrackerApiFactory>
+public class TaskItemEndpointsTests : TaskTrackerTestBase
 {
-    private readonly HttpClient _client; 
-
-    public TaskItemEndpointsTests(TaskTrackerApiFactory factory)
+    
+    public TaskItemEndpointsTests(TaskTrackerApiFactory factory) : base(factory)
     {
-        factory.ResetDatabase();
-        _client = factory.CreateClient();
+        
     }
-
 
     [Fact]
     public async Task AddTask_ReturnOk()
@@ -28,7 +25,10 @@ public class TaskItemEndpointsTests : IClassFixture<TaskTrackerApiFactory>
         // Arrange
         var token = await GetToken();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        var request = new {title = "Test Task", description = "test description", deadline = "2026-12-31"};
+        var boardId = await CreateBoard();
+
+        var request = new {title = "Test Task", description = "test description", deadline = "2026-12-31", boardid = boardId.Id};
+
 
         //Act
         var response = await _client.PostAsJsonAsync("api/TaskItem", request);
@@ -52,19 +52,29 @@ public class TaskItemEndpointsTests : IClassFixture<TaskTrackerApiFactory>
         //Arrange
         var token = await GetToken();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        var request = new {title = "new test", description = "tests description", deadline = "2024-05-10"};
-        for(int i = 0; i < 10; i++)
+        var boardId = await CreateBoard();
+        var requests = new[]
+{
+    new { title = "Task 1", description = "första", deadline = "2026-01-01", boardid = boardId.Id },
+    new { title = "Task 2", description = "andra", deadline = "2026-02-15", boardid = boardId.Id },
+    new { title = "Task 3", description = "tredje", deadline = "2026-03-30", boardid = boardId.Id },
+};
+        foreach(var r in requests)
         {
-            await _client.PostAsJsonAsync("/api/TaskItem", request);
+            
+            await _client.PostAsJsonAsync("/api/TaskItem", r);
         }
+        
+        
         //Act
-        var response = await _client.GetAsync("/api/TaskItem");
+        var response = await _client.GetAsync($"/api/board/{boardId!.Id}/task");
+
         //Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         var tasks = await response.Content.ReadFromJsonAsync<List<TaskItem>>();
         Assert.NotNull(tasks);
-        Assert.Equal(10, tasks!.Count);
+        Assert.Equal(3, tasks!.Count);
     }
     [Fact]
     public async Task GetById_ResponseOk()
@@ -72,12 +82,12 @@ public class TaskItemEndpointsTests : IClassFixture<TaskTrackerApiFactory>
         // Arrange
         var token = await GetToken();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
+        var boardId = await CreateBoard();
         var requests = new[]
         {
-            new { title = "Task 1", description = "första", deadline = "2026-01-01" },
-            new { title = "Task 2", description = "andra", deadline = "2026-02-15" },
-            new { title = "Task 3", description = "tredje", deadline = "2026-03-30" },
+            new { title = "Task 1", description = "första", deadline = "2026-01-01", boardid = boardId.Id },
+            new { title = "Task 2", description = "andra", deadline = "2026-02-15", boardid = boardId.Id },
+            new { title = "Task 3", description = "tredje", deadline = "2026-03-30", boardid = boardId.Id },
         };
 
         foreach(var r in requests)
@@ -98,13 +108,6 @@ public class TaskItemEndpointsTests : IClassFixture<TaskTrackerApiFactory>
         Assert.Equal("Task 1", task!.Title);
     }
 
-    private async Task<string> GetToken()
-    {
-        await _client.PostAsJsonAsync("api/Auth/register", new {email = "login@example.com", password = "Test1234!"});
-        var loginResponse = await _client.PostAsJsonAsync("api/Auth", new {email = "login@example.com", password = "Test1234!"});
-        var loginBody = await loginResponse.Content.ReadFromJsonAsync<LoginResponse>();
-        var token = loginBody!.Token;
-        return token; 
-    }
+   
     
 }

@@ -25,7 +25,11 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFramework
 builder.Services.AddControllers(options =>
 {
     options.SuppressAsyncSuffixInActionNames = false;
-}); 
+})
+.AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+});
 
 builder.Services.AddAuthentication(options =>
 {
