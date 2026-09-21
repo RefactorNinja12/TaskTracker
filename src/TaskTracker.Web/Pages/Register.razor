@@ -1,0 +1,99 @@
+@page "/register"
+
+@using TaskTracker.Web.Services
+@inject AuthService AuthSvc
+@inject NavigationManager Navigation
+
+<div class = "background-div">
+    <div class="left-background-container">
+
+        <div>
+            <h3 class="small-grey-text">TASKFLOW</h3>
+        </div>
+        <div>
+            <h2 class="fat-text">Get started</h2>
+            <h2 class="bold-organized">for free.</h2>
+            <h3 class="small-grey-text">Create an account and start organizing your</h3>
+            <h3 class="small-grey-text">team's work in under a minute.</h3>
+
+            <ul class="register-text-list">
+                <li>Unlimited boards</li>
+                <li>Drag-and-drop kanban</li>
+                <li>Real-time collaboration</li>
+            </ul>
+        </div>
+        <div class = "bottom-container">
+            <div class = "stat-container">
+                <p class="small-grey-text">Already have an account? <a href="/">Sign in</a></p>
+            </div>
+            
+
+        </div>
+    </div>
+    <div class="right-background-container">
+        <div class = "signin-title-container">
+            <h2>Create account</h2>
+            <h3 class="small-grey-text">Free forever. No credit card required.</h3>
+        </div>
+        <div class = "login-page">
+            <form class = "login-form" @onsubmit="HandleRegister">
+            <label>
+                Email
+            </label>
+            <input class="form-element" type="email" @bind="email" />
+            <label>
+                Password
+            </label>
+            <input class="form-element" type="password" @bind="password" />
+            <label>
+                Confirm Password
+            </label>
+            <input class="form-element" type="password" @bind = "confirmpassword">
+
+            @if (errors.Any())
+            {
+                <ul class="error-list">
+                    @foreach (var error in errors)
+                    {
+                    <li>@error</li>
+                    }
+                </ul>
+}
+
+            <button class="btn-element" type="submit"> Create account</button>
+            </form>
+
+
+            
+        </div>
+        
+    </div>
+</div>
+
+
+@code {
+    private string email = "";
+    private string password = "";
+    private string confirmpassword = "";
+    private List<string> errors = new();
+
+    
+    private async Task HandleRegister(){
+        errors.Clear();
+        if(password != confirmpassword){
+            errors.Add("Lösenorden matchar inte");
+            return;
+        }
+
+        var result = await AuthSvc.RegisterAsync(email, password);
+
+        if(result.Success){
+            Navigation.NavigateTo("/");
+        }
+        else{
+            errors = result.Errors;
+        }
+
+
+    }
+}

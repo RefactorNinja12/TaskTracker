@@ -32,6 +32,10 @@ x86/
 bld/
 [Bb]in/
 [Oo]bj/
+[Bb]in-win/
+[Oo]bj-win/
+[Bb]in-linux/
+[Oo]bj-linux/
 [Ll]og/
 [Ll]ogs/
 

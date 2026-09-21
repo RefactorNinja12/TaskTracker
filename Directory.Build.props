@@ -1,0 +1,16 @@
+<Project>
+  <!-- Repo is shared between the devcontainer (Linux) and native Windows via WSL's /mnt/c mount.
+       Building from both OSes against the same obj/bin corrupts NuGet's cached restore data
+       (Windows-specific fallback package folder paths end up in files Linux then can't read).
+       Giving each OS its own intermediate/output folders avoids that entirely. -->
+  <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
+    <BaseIntermediateOutputPath>obj-win\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+    <BaseOutputPath>bin-win\</BaseOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
+    <BaseIntermediateOutputPath>obj-linux/</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+    <BaseOutputPath>bin-linux/</BaseOutputPath>
+  </PropertyGroup>
+</Project>
