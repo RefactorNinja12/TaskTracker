@@ -1,7 +1,6 @@
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Mvc.Testing;
 using TaskTracker.Contracts;
-using TaskTracker.Domain;
 
 namespace TaskTracker.IntegrationTests;
 
@@ -22,11 +21,11 @@ public abstract class TaskTrackerTestBase : IClassFixture<TaskTrackerApiFactory>
         return loginBody!.Token;
     }
 
-    protected async Task<Board> CreateBoard()
+    protected async Task<BoardResponse> CreateBoard()
     {
         var boardRequest = new { title = "TestTitle", description = "Det här är ett test" };
         var boardResponse = await _client.PostAsJsonAsync("/api/Board", boardRequest);
-        var board = await boardResponse.Content.ReadFromJsonAsync<Board>();
+        var board = await boardResponse.Content.ReadFromJsonAsync<BoardResponse>();
         return board!;
     }
 }

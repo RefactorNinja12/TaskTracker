@@ -1,0 +1,37 @@
+.navbar-container{
+    
+    width: 100%;
+    background-color: #212D40;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 16px 32px;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #F8F4F9;
+    
+    
+}
+
+.taskflow-title-container{
+    display: flex;
+    justify-content: center;   
+    align-items: center; 
+}
+.button-email-container{
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    align-items: center;
+}
+h3{
+    font-size: 1.5rem;
+}
+button{
+    background-color: #D66853;
+    color: #F8F4F9;
+    border-radius: 4px ;
+    border: none;
+    padding: 10px;
+
+    
+}

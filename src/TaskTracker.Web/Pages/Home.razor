@@ -1,7 +1,56 @@
-﻿@page "/home"
+﻿@using TaskTracker.Web.Components
+@using TaskTracker.Contracts
+@using TaskTracker.Web.Services
+@inject AuthService AuthSvc
+@inject NavigationManager Navigation
+@inject BoardService BoardSvc
+@page "/home"
+
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<NavBar />
 
-Welcome to your new app.
+<div class="header-container">
+    <div class="left-title-container">
+        <p>Workspace</p>
+        <h3>My Boards</h3>
+    </div>
+    
+    <div class="right-btn-container">
+        <button @onclick="ToggleTrueForm">+ New board</button>
+    </div>
+    @if (showForm)
+    {
+        <CreateBoardForm OnBoardCreated = "HandleBoardCreated" OnCancel = "HandleCancel" />
+    }
+</div>
+
+<div class="board-grid">
+    @foreach(var board in boards)
+    {
+        <BoardCard Board="board"/>
+    }
+</div>
+
+@code{
+    private bool showForm = false; 
+    private List<BoardResponse> boards = new();
+    protected override async Task OnInitializedAsync()
+    {
+        if (AuthSvc.Token is null)
+        {
+            Navigation.NavigateTo("/");
+            return;
+        }
+        boards = await BoardSvc.GetBoards();
+    }
+    private void ToggleTrueForm() => showForm = true;
+    private void HandleCancel() => showForm = false; 
+    private void HandleBoardCreated(BoardResponse response)
+    {
+        boards.Add(response);
+        showForm = false; 
+
+    }
+}

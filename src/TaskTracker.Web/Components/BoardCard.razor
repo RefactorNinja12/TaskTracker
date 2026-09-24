@@ -1,0 +1,40 @@
+
+@using TaskTracker.Contracts
+@inject NavigationManager Navigation
+<div class="container" @onclick="GoToTasks">
+    <div>
+            <h3>@Board.Title</h3>
+            <h4>@Board.Description</h4>
+        </div>
+    <div class="task-stat-container">
+        <div class="stat1">
+            <p>2 Todo</p>
+        </div>
+        <div class="stat2" >
+            <p>1 In Process</p>
+        </div>
+        <div class="stat3">
+            <p>2 Done</p>
+        </div>
+    </div>
+    <div class="taskbar-container">
+        <div class="full-bar-container">
+            <div class="progress-bar">
+
+            </div>
+        </div>
+    </div>
+    <div class="bottom-text-container">
+        <h4>@Board.CreatedAt.ToString("yyyy-MM-dd")</h4>
+        <h4>40% done</h4>
+    </div>
+</div>
+
+@code{
+    [Parameter]
+    public BoardResponse Board {get; set;} = default!;
+    private void GoToTasks()
+    {
+        Navigation.NavigateTo($"/task/{Board.Id}");
+    }
+}
