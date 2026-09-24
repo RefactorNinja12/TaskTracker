@@ -22,7 +22,7 @@ public class TaskItemController : ControllerBase
 
 
     [HttpGet("/api/board/{boardId}/task")]
-    public async Task<ActionResult<IEnumerable<TaskItem>>> GetAllTaskAsync(int boardId)
+    public async Task<ActionResult<IEnumerable<TaskItemResponse>>> GetAllTaskAsync(int boardId)
     {
          var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
          if(userId is null) return Unauthorized();
@@ -31,23 +31,43 @@ public class TaskItemController : ControllerBase
         if(board.UserId != userId) return Forbid();
 
         var tasks = await _context.Tasks.Where(t => t.BoardId == boardId).ToListAsync();
-        return Ok(tasks);
+        var taskResponse = tasks.Select(x => new TaskItemResponse
+        {
+           Id = x.Id,
+           Title = x.Title,
+           Description = x.Description,
+           CreatedAt = x.CreatedAt,
+           Deadline = x.Deadline,
+           Completed = x.Completed,
+           Status = x.Status
+            
+        });
+        return Ok(taskResponse);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<TaskItem>> GetByIdAsync(int id)
+    public async Task<ActionResult<TaskItemResponse>> GetByIdAsync(int id)
     {
        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
        if(userId is null) return Unauthorized();
        var task = await _context.Tasks.Include(t => t.Board).FirstOrDefaultAsync(t => t.Id == id);
         if(task is null) return NotFound();
         if(task.Board!.UserId != userId) return Forbid();
-
-        return Ok(task);
+        var taskResponse = new TaskItemResponse
+        {
+            Id = task.Id,
+           Title = task.Title,
+           Description = task.Description,
+           CreatedAt = task.CreatedAt,
+           Deadline = task.Deadline,
+           Completed = task.Completed,
+           Status = task.Status
+        };
+        return Ok(taskResponse);
     }
 
     [HttpPost]
-    public async Task<ActionResult<TaskItem>> CreateTaskAsync(CreateTaskItemRequest request)
+    public async Task<ActionResult<TaskItemResponse>> CreateTaskAsync(CreateTaskItemRequest request)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if(userId is null) return Unauthorized();
@@ -55,7 +75,7 @@ public class TaskItemController : ControllerBase
         if(board is null) return NotFound();
         if(board.UserId != userId) return Forbid();
 
-        var taskItem = new TaskItem
+        var task = new TaskItem
         {
            CreatedAt = DateTimeOffset.UtcNow,
            Title = request.Title,
@@ -64,10 +84,19 @@ public class TaskItemController : ControllerBase
            BoardId = request.BoardId
         };
 
-        _context.Add(taskItem);
+        _context.Add(task);
         await _context.SaveChangesAsync();
-
-        return CreatedAtAction(nameof(GetByIdAsync), new { id = taskItem.Id }, taskItem);
+        var response = new TaskItemResponse
+        {
+            Id = task.Id,
+           Title = task.Title,
+           Description = task.Description,
+           CreatedAt = task.CreatedAt,
+           Deadline = task.Deadline,
+           Completed = task.Completed,
+           Status = task.Status
+        };
+        return CreatedAtAction(nameof(GetByIdAsync), new { id = task.Id }, response);
             
     }
    

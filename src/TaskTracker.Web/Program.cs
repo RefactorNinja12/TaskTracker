@@ -9,5 +9,6 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://127.0.0.1:5227/") });
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<BoardService>();
 
 await builder.Build().RunAsync();

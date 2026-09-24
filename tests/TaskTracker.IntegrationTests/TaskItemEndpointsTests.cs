@@ -5,8 +5,6 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using TaskTracker.Contracts;
-using TaskTracker.Domain;
-using TaskTracker.Infrastructure;
 
 
 namespace TaskTracker.IntegrationTests;
@@ -38,7 +36,7 @@ public class TaskItemEndpointsTests : TaskTrackerTestBase
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         Assert.NotNull(response.Headers.Location);
 
-        var created = await response.Content.ReadFromJsonAsync<TaskItem>();
+        var created = await response.Content.ReadFromJsonAsync<TaskItemResponse>();
         Assert.NotNull(created);
         Assert.True(created!.Id > 0);
         Assert.Equal("Test Task", created.Title);
@@ -72,7 +70,7 @@ public class TaskItemEndpointsTests : TaskTrackerTestBase
         //Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var tasks = await response.Content.ReadFromJsonAsync<List<TaskItem>>();
+        var tasks = await response.Content.ReadFromJsonAsync<List<TaskItemResponse>>();
         Assert.NotNull(tasks);
         Assert.Equal(3, tasks!.Count);
     }
@@ -102,7 +100,7 @@ public class TaskItemEndpointsTests : TaskTrackerTestBase
 
         // Assert 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var task = await response.Content.ReadFromJsonAsync<TaskItem>();
+        var task = await response.Content.ReadFromJsonAsync<TaskItemResponse>();
         Assert.NotNull(task);
         Assert.Equal(1, task.Id);
         Assert.Equal("Task 1", task!.Title);

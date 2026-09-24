@@ -27,10 +27,10 @@ public class BoardEndpointsTests : TaskTrackerTestBase
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         Assert.NotNull(response.Headers.Location);
 
-        var created = await response.Content.ReadFromJsonAsync<Board>();
+        var created = await response.Content.ReadFromJsonAsync<BoardResponse>();
         Assert.NotNull(created);
         Assert.True(created!.Id > 0);
-        Assert.Equal("My Board", created.Name);
+        Assert.Equal("My Board", created.Title);
         Assert.Equal("A test board", created.Description);
     }
 
@@ -49,7 +49,7 @@ public class BoardEndpointsTests : TaskTrackerTestBase
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var boards = await response.Content.ReadFromJsonAsync<List<Board>>();
+        var boards = await response.Content.ReadFromJsonAsync<List<BoardResponse>>();
         Assert.NotNull(boards);
         Assert.Equal(3, boards!.Count);
     }
@@ -67,7 +67,7 @@ public class BoardEndpointsTests : TaskTrackerTestBase
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var fetched = await response.Content.ReadFromJsonAsync<Board>();
+        var fetched = await response.Content.ReadFromJsonAsync<BoardResponse>();
         Assert.NotNull(fetched);
         Assert.Equal(board.Id, fetched!.Id);
     }
@@ -88,8 +88,8 @@ public class BoardEndpointsTests : TaskTrackerTestBase
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
 
         var getResponse = await _client.GetAsync($"/api/Board/{board.Id}");
-        var updated = await getResponse.Content.ReadFromJsonAsync<Board>();
-        Assert.Equal("Updated Title", updated!.Name);
+        var updated = await getResponse.Content.ReadFromJsonAsync<BoardResponse>();
+        Assert.Equal("Updated Title", updated!.Title);
         Assert.Equal("Updated description", updated.Description);
     }
 

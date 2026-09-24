@@ -1,0 +1,74 @@
+.container{
+    
+    padding: 20px;
+    min-height: 160px;
+    border-radius: 6px;
+    border-top: 2px solid #D66853;
+    border-left: 1px solid #212D40;
+    border-bottom: 1px solid #212D40;
+    border-right: 1px solid #212D40;
+}
+h3{
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+h4{
+    font-size: 0.9rem;
+    color: #212D40;
+}
+.task-stat-container{
+    display: flex;
+    gap: 8px;
+}
+
+.stat1, .stat2, .stat3 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    flex: 1;
+    border-radius: 60px;
+    padding: 4px;
+    border: 2px solid #212D40;
+    color: #F8F4F9;
+}
+p{
+    margin: 0;
+}
+
+.stat1 {
+    
+    background-color: #347FC4;
+    
+    
+}
+.stat2 {
+    background-color: #D66853;
+    flex: 2
+}
+.stat3 {
+    background-color: #6FD08C;
+    
+}
+.full-bar-container{
+    background-color: grey;
+    min-height: 12px;
+    width: 100%;
+    border-radius: 8px;
+}
+.taskbar-container{
+    
+    padding: 12px 0px;
+}
+.progress-bar{
+    background-color: #6FD08C;
+    width: 80%;
+    min-height: 12px;
+    border-radius: 8px;
+}
+.bottom-text-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
