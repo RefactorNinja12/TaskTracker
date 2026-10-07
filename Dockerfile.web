@@ -1,0 +1,19 @@
+# ---- Steg 1: Build ----
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+# Kopiera bara .csproj-filerna först (bättre layer-caching)
+COPY src/TaskTracker.Web/TaskTracker.Web.csproj src/TaskTracker.Web/
+COPY src/TaskTracker.Contracts/TaskTracker.Contracts.csproj src/TaskTracker.Contracts/
+
+RUN dotnet restore src/TaskTracker.Web/TaskTracker.Web.csproj
+
+# kopiera resten av källkoden och bygg
+COPY src/ src/
+RUN dotnet publish src/TaskTracker.Web/TaskTracker.Web.csproj -c Release -o /app/publish
+
+# ---- Steg 2: Runtime ----
+FROM nginx:alpine AS final
+COPY --from=build /app/publish/wwwroot /usr/share/nginx/html
+COPY nginx.web.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
