@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: tasktracker-api
-          image: ghcr.io/refactorninja12/tasktracker-api:latest
+          image: ghcr.io/refactorninja12/tasktracker-api:62b60a8
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
