@@ -1,0 +1,96 @@
+@using TaskTracker.Contracts
+@using TaskTracker.Domain
+@using TaskTracker.Web.Services
+@inject TaskItemService TaskItemSvc
+
+<div class="container">
+
+    <div class="status-title-container">
+        <div class="card-status-container">
+            <div class="color-circle" style="background-color:@StatusColor"></div>
+            <h1>@Status</h1>
+            <div class="square">
+                <h3>@TaskItems.Count</h3>
+            </div>
+        </div>
+
+        <div class="add-task-container">
+            <h2 @onclick="ToggleForm">+</h2>
+        </div>
+    </div>
+    <div class="task-holder-container" style="background-color:@StatusBackgroundColor" @ondragover:preventDefault @ondrop="HandleDrop">
+        @if (showForm)
+        {
+            <AddCardForm BoardId="BoardId" OnCancel = "CancelForm" OnHandleTaskCreate = "HandleCreated"/>
+        }
+        @foreach(var t in TaskItems)
+        {
+            <TaskCard @key="t.Id" Task = "t" OnDragStart="DragStart" OnCardClick="HandleCardClick"/>
+        }
+
+    </div>
+</div>
+
+@code{
+    [Parameter]
+    public int BoardId {get; set;}
+    [Parameter]
+    public TaskItemStatus Status {get; set;}
+    private bool showForm = false;
+    [Parameter]
+    public List<TaskItemResponse> TaskItems {get; set;} = new List<TaskItemResponse>();
+
+    [Parameter]
+    public EventCallback<int> OnTaskDragStart {get; set;}
+    [Parameter]
+    public EventCallback<TaskItemStatus> OnDrop {get; set;}
+    [Parameter]
+    public EventCallback<TaskItemResponse> OnTaskCreated {get; set;}
+    [Parameter]
+    public EventCallback<TaskItemResponse> OnTaskSelected {get; set;}
+
+    private string StatusColor => Status switch
+    {
+        TaskItemStatus.ToDo => "#347FC4",
+        TaskItemStatus.InProgress => "#D66853",
+        TaskItemStatus.Done => "#6FD08C",
+        _ => "#F8F4F9"
+    };
+
+    private string StatusBackgroundColor => Status switch
+    {
+        TaskItemStatus.ToDo => "rgba(52, 127, 196, 0.15)",
+        TaskItemStatus.InProgress => "rgba(214, 104, 83, 0.15)",
+        TaskItemStatus.Done => "rgba(111, 208, 140, 0.15)",
+        _ => "#F8F4F9"
+    };
+
+    private void ToggleForm()
+    {
+        showForm = true;
+    }
+    private async Task HandleCreated(TaskItemResponse response)
+    {
+        await OnTaskCreated.InvokeAsync(response);
+        showForm = false;
+    }
+    private void CancelForm()
+    {
+        showForm = false;
+    }
+
+    private async Task DragStart(int id)
+    {
+        await OnTaskDragStart.InvokeAsync(id);
+    }
+
+    private async Task HandleDrop()
+    {
+        await OnDrop.InvokeAsync(Status);
+    }
+
+    private async Task HandleCardClick(TaskItemResponse task)
+    {
+        await OnTaskSelected.InvokeAsync(task);
+    }
+}

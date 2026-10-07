@@ -8,7 +8,7 @@
             "extensions": [
               "ms-dotnettools.csdevkit",
               "anthropic.claude-code",
-              "redhat.vscode-yaml",
+              "redhat.vscode-yaml"
             ]
         }
     },

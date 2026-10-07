@@ -1,0 +1,102 @@
+@using TaskTracker.Contracts
+@using TaskTracker.Domain
+@using TaskTracker.Web.Services
+@inject TaskItemService TaskItemSvc
+
+<div class="modal-overlay">
+    <div class="modal-container">
+        <h1>Task details</h1>
+
+        <div class="field-container">
+            <label>Title</label>
+            <input class="form-input-field" type="text" @bind="title" />
+        </div>
+
+        <div class="field-container">
+            <label>Description</label>
+            <textarea class="form-input-field" @bind="description"></textarea>
+        </div>
+
+        <div class="field-container">
+            <label>Status</label>
+            <select class="form-input-field" @bind="status">
+                <option value="@TaskItemStatus.ToDo">To Do</option>
+                <option value="@TaskItemStatus.InProgress">In Progress</option>
+                <option value="@TaskItemStatus.Done">Done</option>
+            </select>
+        </div>
+
+        <div class="field-container">
+            <label>Deadline</label>
+            <input class="form-input-field" type="date" @bind="deadline" />
+        </div>
+
+        <div class="button-row">
+            <button class="btn-delete" type="button" @onclick="HandleDelete">Delete Task</button>
+            <div class="right-buttons">
+                <button class="btn-cancel" type="button" @onclick="HandleCancel">Cancel</button>
+                <button class="btn-save" type="button" @onclick="HandleSave">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public TaskItemResponse Task { get; set; } = default!;
+    [Parameter]
+    public EventCallback<TaskItemResponse> OnSave { get; set; }
+    [Parameter]
+    public EventCallback<int> OnDelete { get; set; }
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    private string title = "";
+    private string? description;
+    private TaskItemStatus status;
+    private DateOnly? deadline;
+
+    protected override void OnParametersSet()
+    {
+        title = Task.Title;
+        description = Task.Description;
+        status = Task.Status;
+        deadline = Task.Deadline;
+    }
+
+    private async Task HandleSave()
+    {
+        var request = new UpdateTaskItemRequest
+        {
+            Title = title,
+            Description = description,
+            Deadline = deadline,
+            Completed = Task.Completed,
+            Status = status
+        };
+
+        var success = await TaskItemSvc.UpdateTaskAsync(Task.Id, request);
+        if (success)
+        {
+            Task.Title = title;
+            Task.Description = description;
+            Task.Deadline = deadline;
+            Task.Status = status;
+            await OnSave.InvokeAsync(Task);
+        }
+    }
+
+    private async Task HandleDelete()
+    {
+        var success = await TaskItemSvc.DeleteTaskAsync(Task.Id);
+        if (success)
+        {
+            await OnDelete.InvokeAsync(Task.Id);
+        }
+    }
+
+    private async Task HandleCancel()
+    {
+        await OnCancel.InvokeAsync();
+    }
+}

@@ -21,6 +21,8 @@ services:
       - db
     environment:
        ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
+       DOTNET_USE_POLLING_FILE_WATCHER: "true"
+       DOTNET_WATCH_SUPPRESS_BROWSER_REFRESH: "1"
 volumes:
   pgdata:
   claude-config:

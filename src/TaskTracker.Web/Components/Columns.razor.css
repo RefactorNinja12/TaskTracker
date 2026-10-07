@@ -1,0 +1,63 @@
+.status-title-container{
+    background-color: #212D40;
+    color: #F8F4F9;
+    padding: 8px 32px;
+    border-top-right-radius: 6px;
+    border-top-left-radius: 6px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.add-task-container{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.card-status-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+}
+h1{
+    font-size: 16px;
+    margin: 0px;
+    font-weight: 600;
+}
+h2{
+    margin: 0px;
+    font-size: 18px;
+    color: #F8F4F9;
+}
+h3{
+    font-size: 16px;
+    margin: 0px;
+    color: #F8F4F9;
+}
+.color-circle{
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+.square{
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    background-color: #D66853;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.container{
+    width: 33%;
+}
+.task-holder-container{
+    height: 80vh;
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+    padding: 16px;
+    display: flex;
+    gap: 8px;
+    flex-direction: column;
+    overflow-y: auto;
+}

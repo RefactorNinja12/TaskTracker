@@ -48,7 +48,19 @@ builder.Services.AddAuthentication(options =>
        ValidIssuer = jwtIssuer,
        ValidAudience = jwtAudience,
        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
-   }; 
+   };
+
+   options.Events = new JwtBearerEvents
+   {
+       OnMessageReceived = context =>
+       {
+           if (context.Request.Cookies.TryGetValue("auth_token", out var cookieToken))
+           {
+               context.Token = cookieToken;
+           }
+           return Task.CompletedTask;
+       }
+   };
 });
 
 builder.Services.AddAuthorization();
@@ -59,7 +71,8 @@ builder.Services.AddCors(options =>
    {
       policy.WithOrigins("http://localhost:5165", "https://localhost:7272")
                 .AllowAnyHeader()
-                .AllowAnyMethod();
+                .AllowAnyMethod()
+                .AllowCredentials();
    }); 
 });
 

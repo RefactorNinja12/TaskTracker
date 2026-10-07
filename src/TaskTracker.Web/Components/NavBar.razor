@@ -1,10 +1,29 @@
+@using TaskTracker.Web.Services
+@inject AuthService AuthSvc
+@inject NavigationManager Navigation
 
 <div class="navbar-container">
     <div class="taskflow-title-container">
         <h3>TASKFLOW</h3>
     </div>
     <div class="button-email-container">
-        <h3>rickynilsson@gmail.com</h3>
-        <button>Sign out</button>
+        <h3>@email</h3>
+        <button @onclick="HandleSignOut">Sign out</button>
     </div>
 </div>
+
+@code {
+    private string email = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = await AuthSvc.GetCurrentUserAsync();
+        email = user?.Email ?? "";
+    }
+
+    private async Task HandleSignOut()
+    {
+        await AuthSvc.LogoutAsync();
+        Navigation.NavigateTo("/", forceLoad: true);
+    }
+}
