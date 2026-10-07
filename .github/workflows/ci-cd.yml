@@ -42,11 +42,15 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Set short SHA
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
@@ -61,7 +65,7 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          tags: ghcr.io/refactorninja12/tasktracker-api:latest
+          tags: ghcr.io/refactorninja12/tasktracker-api:${{ steps.vars.outputs.sha_short }}
 
       - name: Build and push Web image
         uses: docker/build-push-action@v5
@@ -69,6 +73,19 @@ jobs:
           context: .
           file: Dockerfile.web
           push: true
-          tags: ghcr.io/refactorninja12/tasktracker-web:latest
+          tags: ghcr.io/refactorninja12/tasktracker-web:${{ steps.vars.outputs.sha_short }}
+
+      - name: Update k8s manifests with new image tags
+        run: |
+          sed -i "s|tasktracker-api:.*|tasktracker-api:${{ steps.vars.outputs.sha_short }}|" k8s/api.yaml
+          sed -i "s|tasktracker-web:.*|tasktracker-web:${{ steps.vars.outputs.sha_short }}|" k8s/web.yaml
+
+      - name: Commit and push updated manifests
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add k8s/api.yaml k8s/web.yaml
+          git commit -m "ci: update image tags to ${{ steps.vars.outputs.sha_short }} [skip ci]" || echo "No changes to commit"
+          git push
 
 
