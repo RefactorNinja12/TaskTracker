@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tasktracker-web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tasktracker-web
+  template:
+    metadata:
+      labels:
+        app: tasktracker-web
+    spec:
+      containers:
+        - name: tasktracker-web
+          image: ghcr.io/refactorninja12/tasktracker-web:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tasktracker-web
+spec:
+  selector:
+    app: tasktracker-web
+  ports:
+    - port: 80
+      targetPort: 80

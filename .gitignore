@@ -480,3 +480,6 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Temporary local k3d test overrides - never commit
+k8s/local-test.yaml
