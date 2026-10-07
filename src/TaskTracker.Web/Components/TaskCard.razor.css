@@ -1,0 +1,52 @@
+.card-container{
+    border-radius: 8px;
+    border: 2px solid #212D40;
+    background-color: #F8F4F9;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    cursor: pointer;
+    transition: box-shadow 0.15s ease;
+}
+.card-container:hover{
+    box-shadow: 0 2px 6px rgba(33, 45, 64, 0.25);
+}
+.title-container h1{
+    font-size: 18px;
+    font-weight: 600;
+    color: #212D40;
+    margin: 0;
+}
+.description-container h2{
+    color: #212D40;
+    opacity: 0.7;
+    font-size: 14px;
+    font-weight: 400;
+    margin: 0px;
+}
+.deadline-container{
+    border-radius: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 10px;
+    font-size: 12px;
+}
+.deadline-container h2{
+    color: #F8F4F9;
+    opacity: 1;
+    font-size: 12px;
+    margin: 0;
+}
+.deadline-container.created{
+    background-color: #347FC4;
+}
+.deadline-container.deadline{
+    background-color: #D66853;
+}
+.time-container{
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}

@@ -31,6 +31,25 @@ public class AuthService
 
     }
 
+    public async Task<bool> IsAuthenticatedAsync()
+    {
+        var response = await _client.GetAsync("api/Auth/me");
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<MeResponse?> GetCurrentUserAsync()
+    {
+        var response = await _client.GetAsync("api/Auth/me");
+        if (!response.IsSuccessStatusCode) return null;
+        return await response.Content.ReadFromJsonAsync<MeResponse>();
+    }
+
+    public async Task LogoutAsync()
+    {
+        await _client.PostAsync("api/Auth/logout", null);
+        Token = null;
+    }
+
     public async Task<AuthResult> RegisterAsync(string email, string password)
     {
         var response = await _client.PostAsJsonAsync("api/Auth/register", new {email, password});

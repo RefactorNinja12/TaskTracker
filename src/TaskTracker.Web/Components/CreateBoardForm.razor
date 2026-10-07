@@ -2,15 +2,18 @@
 @using TaskTracker.Contracts
 @using TaskTracker.Web.Services
 @inject BoardService BoardSvc
-<div>
-    <form class="create-board-form" @onsubmit="HandleSubmit">
-        <label>
-            Create new board
-        </label
+<div class="container">
+    <div class="create-board-title">
+        <h1>Create board</h1>
+        
 
-        <input class="form-input-field" type="text" @bind="title" />
-        <input class="form-input-field" type="text" @bind="description" />
-        <button class="btn-element" type="submit">Create</button>
+    </div>
+    <form class="create-board-form" @onsubmit="HandleSubmit">
+        
+
+        <input class="form-input-field" type="text" placeholder="Title" @bind="title" />
+        <input class="form-input-field" type="text" placeholder="Description" @bind="description" />
+        <button class="btn-submit" type="submit">Create</button>
         <button class="btn-element" @onclick="HandleCancel">Cancel</button>
     </form>
 </div>

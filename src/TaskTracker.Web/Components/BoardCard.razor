@@ -8,31 +8,35 @@
         </div>
     <div class="task-stat-container">
         <div class="stat1">
-            <p>2 Todo</p>
+            <p>@Board.ToDoCount Todo</p>
         </div>
         <div class="stat2" >
-            <p>1 In Process</p>
+            <p>@Board.InProgressCount In Process</p>
         </div>
         <div class="stat3">
-            <p>2 Done</p>
+            <p>@Board.DoneCount Done</p>
         </div>
     </div>
     <div class="taskbar-container">
         <div class="full-bar-container">
-            <div class="progress-bar">
+            <div class="progress-bar" style="width:@(PercentDone)%">
 
             </div>
         </div>
     </div>
     <div class="bottom-text-container">
         <h4>@Board.CreatedAt.ToString("yyyy-MM-dd")</h4>
-        <h4>40% done</h4>
+        <h4>@PercentDone% done</h4>
     </div>
 </div>
 
 @code{
     [Parameter]
     public BoardResponse Board {get; set;} = default!;
+
+    private int TotalTasks => Board.ToDoCount + Board.InProgressCount + Board.DoneCount;
+    private int PercentDone => TotalTasks == 0 ? 0 : (int)Math.Round(Board.DoneCount * 100.0 / TotalTasks);
+
     private void GoToTasks()
     {
         Navigation.NavigateTo($"/task/{Board.Id}");

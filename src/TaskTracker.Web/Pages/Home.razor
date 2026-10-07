@@ -1,10 +1,12 @@
-﻿@using TaskTracker.Web.Components
+﻿@using TaskTracker.Web
 @using TaskTracker.Contracts
 @using TaskTracker.Web.Services
 @inject AuthService AuthSvc
 @inject NavigationManager Navigation
 @inject BoardService BoardSvc
+
 @page "/home"
+
 
 
 <PageTitle>Home</PageTitle>
@@ -20,11 +22,16 @@
     <div class="right-btn-container">
         <button @onclick="ToggleTrueForm">+ New board</button>
     </div>
-    @if (showForm)
-    {
-        <CreateBoardForm OnBoardCreated = "HandleBoardCreated" OnCancel = "HandleCancel" />
-    }
+    
 </div>
+@if (showForm)
+{
+    <div class="create-board-wrapper">
+        <CreateBoardForm OnBoardCreated = "HandleBoardCreated" OnCancel = "HandleCancel" />
+    </div>
+}
+
+
 
 <div class="board-grid">
     @foreach(var board in boards)
@@ -38,7 +45,7 @@
     private List<BoardResponse> boards = new();
     protected override async Task OnInitializedAsync()
     {
-        if (AuthSvc.Token is null)
+        if (!await AuthSvc.IsAuthenticatedAsync())
         {
             Navigation.NavigateTo("/");
             return;

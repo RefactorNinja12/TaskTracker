@@ -26,13 +26,16 @@ public class BoardController : ControllerBase
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if(userId is null) return Unauthorized();
-        var boards = await _context.Boards.Where(x => x.UserId == userId).ToListAsync();
+        var boards = await _context.Boards.Include(b => b.TaskItems).Where(x => x.UserId == userId).ToListAsync();
         var response = boards.Select(b => new BoardResponse
         {
            Id = b.Id,
            Title = b.Name,
            Description = b.Description,
-           CreatedAt = b.CreatedAt 
+           CreatedAt = b.CreatedAt,
+           ToDoCount = b.TaskItems.Count(t => t.Status == TaskItemStatus.ToDo),
+           InProgressCount = b.TaskItems.Count(t => t.Status == TaskItemStatus.InProgress),
+           DoneCount = b.TaskItems.Count(t => t.Status == TaskItemStatus.Done)
         });
         return Ok(response);   
     }

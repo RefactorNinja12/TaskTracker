@@ -1,0 +1,88 @@
+@using TaskTracker.Contracts
+@using TaskTracker.Domain
+@using TaskTracker.Web.Components
+@using TaskTracker.Web.Services
+@inject TaskItemService TaskItemSvc
+@page "/task/{BoardId:int}"
+
+<NavBar />
+
+<div class="container">
+
+    @foreach (var status in Enum.GetValues<TaskItemStatus>()){
+    <Columns BoardId="BoardId" Status="status" TaskItems="tasks.Where(x => x.Status == status).ToList()" OnTaskDragStart="HandleTaskDragStart" OnDrop="HandleDrop" OnTaskCreated="HandleTaskCreated" OnTaskSelected="HandleTaskSelected" />
+}
+
+
+
+</div>
+
+@if (selectedTask is not null)
+{
+    <TaskDetailsModal Task="selectedTask" OnCancel="HandleModalCancel" OnSave="HandleModalSave" OnDelete="HandleModalDelete" />
+}
+
+@code {
+    [Parameter]
+    public int BoardId {get; set;}
+    public List<TaskItemResponse> tasks = new ();
+    private int? draggedTaskId;
+    private TaskItemResponse? selectedTask;
+        protected override async Task OnInitializedAsync()
+    {
+        tasks = await TaskItemSvc.GetTasks(BoardId);
+    }
+
+    private void HandleTaskDragStart(int id)
+    {
+        draggedTaskId = id;
+    }
+
+    private void HandleTaskCreated(TaskItemResponse response)
+    {
+        tasks.Add(response);
+    }
+
+    private void HandleTaskSelected(TaskItemResponse task)
+    {
+        selectedTask = task;
+    }
+
+    private void HandleModalCancel()
+    {
+        selectedTask = null;
+    }
+
+    private void HandleModalSave(TaskItemResponse updated)
+    {
+        selectedTask = null;
+    }
+
+    private void HandleModalDelete(int id)
+    {
+        tasks.RemoveAll(t => t.Id == id);
+        selectedTask = null;
+    }
+
+    private async Task HandleDrop(TaskItemStatus newStatus)
+    {
+        var task = tasks.FirstOrDefault(t => t.Id == draggedTaskId);
+        if (task is null || task.Status == newStatus) return;
+
+        var request = new UpdateTaskItemRequest
+        {
+            Title = task.Title,
+            Description = task.Description,
+            Deadline = task.Deadline,
+            Completed = task.Completed,
+            Status = newStatus
+        };
+
+        var success = await TaskItemSvc.UpdateTaskAsync(task.Id, request);
+        if (success)
+        {
+            task.Status = newStatus;
+        }
+        draggedTaskId = null;
+    }
+}

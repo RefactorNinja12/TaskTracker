@@ -1,0 +1,51 @@
+
+@using System.Net
+@using TaskTracker.Contracts
+@using TaskTracker.Web.Services
+@inject TaskItemService TaskItemSvc
+<div class="card-container">
+    <form @onsubmit = "HandleSubmit">
+        <input class="form-input-field" type="text" placeholder="Title" @bind="title"/>
+        <input class="form-input-field" type="text" placeholder="Description" @bind="description" />
+        <input class="form-input-field" type="date" @bind="deadline"/>
+        <div>
+
+        <button type="submit">Add</button>
+        <button type="button" @onclick="HandleCancel">Cancel</button>
+        </div>
+    </form>
+    
+    
+   
+    
+    
+    
+</div>
+
+@code{
+    private string title = "";
+    private string description = "";
+    private DateOnly? deadline;
+    [Parameter]
+    public int BoardId {get; set;}
+    [Parameter]
+    public EventCallback OnCancel {get; set;}
+    [Parameter]
+    public EventCallback<TaskItemResponse> OnHandleTaskCreate {get; set;}
+    private async Task HandleSubmit()
+    {
+        var request = new CreateTaskItemRequest
+        {
+            Title = title,
+            Description = description,
+            Deadline = deadline,
+            BoardId = BoardId
+        };
+        var response = await TaskItemSvc.CreateTask(request);
+        await OnHandleTaskCreate.InvokeAsync(response);
+    }
+    private async Task HandleCancel()
+    {
+        await OnCancel.InvokeAsync();
+    }
+}

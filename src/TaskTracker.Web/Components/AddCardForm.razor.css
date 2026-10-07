@@ -1,0 +1,51 @@
+.card-container{
+    border-radius: 8px;
+    border: 2px solid #212D40;
+    
+    background-color: white;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+h1{
+    font-size: 24px;
+    font-weight: 600;
+}
+.delete-button-container{
+    display: flex;
+    
+    justify-content: space-between;   
+}
+h2{
+    color: grey;
+    font-size: 16px;
+    margin: 0px;
+}
+.deadline-container{
+    border: 2px solid grey;
+    border-radius: 6px;
+    background-color: lightgrey;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 33%;
+    flex-direction: row;
+    justify-content: space-between;
+    
+    
+    
+}
+.time-container{
+    display: flex;
+    justify-content: space-between;
+}
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.form-input-field
+{
+    border: none;
+}

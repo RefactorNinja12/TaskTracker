@@ -28,6 +28,21 @@ public class AuthController : ControllerBase
         _configuration = configuration;
     }
 
+    [Authorize]
+    [HttpGet("me")]
+    public IActionResult Me()
+    {
+        var email = User.FindFirstValue(ClaimTypes.Email);
+        return Ok(new MeResponse { Email = email ?? string.Empty });
+    }
+
+    [HttpPost("logout")]
+    public IActionResult Logout()
+    {
+        Response.Cookies.Delete("auth_token", new CookieOptions { Path = "/" });
+        return Ok();
+    }
+
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterRequest request)
     {
@@ -71,6 +86,14 @@ public class AuthController : ControllerBase
     );
 
     var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+    Response.Cookies.Append("auth_token", tokenString, new CookieOptions
+    {
+        HttpOnly = true,
+        Secure = Request.IsHttps,
+        SameSite = SameSiteMode.Lax,
+        Expires = DateTimeOffset.UtcNow.AddHours(2)
+    });
 
     return Ok(new LoginResponse { Token = tokenString });
 

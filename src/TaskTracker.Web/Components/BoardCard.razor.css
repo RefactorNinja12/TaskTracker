@@ -62,7 +62,6 @@ p{
 }
 .progress-bar{
     background-color: #6FD08C;
-    width: 80%;
     min-height: 12px;
     border-radius: 8px;
 }

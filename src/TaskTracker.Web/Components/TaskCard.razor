@@ -1,0 +1,41 @@
+@using System.Net
+@using TaskTracker.Contracts
+@using TaskTracker.Web.Services
+
+<div class="card-container" draggable="true" @ondragstart="HandleDragStart" @onclick="HandleCardClick">
+    <div class="title-container">
+        <h1>@Task.Title</h1>
+    </div>
+
+    <div class="description-container">
+        <h2>@Task.Description</h2>
+    </div>
+
+    <div class="time-container">
+        <div class="deadline-container created">
+            <h2>@Task.CreatedAt.ToString("yyyy-MM-dd")</h2>
+        </div>
+        <div class="deadline-container deadline">
+            <h2>@(Task.Deadline?.ToString("yyyy-MM-dd") ?? "No deadline")</h2>
+        </div>
+    </div>
+</div>
+
+@code{
+    [Parameter]
+    public TaskItemResponse Task {get; set;} = default!;
+    [Parameter]
+    public EventCallback<int> OnDragStart {get; set;}
+    [Parameter]
+    public EventCallback<TaskItemResponse> OnCardClick {get; set;}
+
+    private async Task HandleDragStart()
+    {
+        await OnDragStart.InvokeAsync(Task.Id);
+    }
+
+    private async Task HandleCardClick()
+    {
+        await OnCardClick.InvokeAsync(Task);
+    }
+}
